@@ -1,0 +1,18 @@
+{
+    "name": "hlf-prototype",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "docker-remove-contract-containers": "docker ps -a -q -f name=contract | xargs docker rm -f",
+        "docker-remove-contract-images": "docker image ls -a -q *contract* | xargs docker image rm",
+        "docker-prune-volumes": "docker volume prune -f",
+        "docker-cleanup": "npm run docker-remove-contract-containers && npm run docker-remove-contract-images && npm run docker-prune-volumes",
+        "standup-cli": "docker-compose -f organization/prototypecorp/configuration/cli/docker-compose.yml up -d",
+        "get-latest-contract-version": "docker exec cli peer chaincode list --installed | grep prototypecontract | awk -F'[ ,]' '{print $5}' | sort -n | tail -n 1",
+        "contract-setup": "npm run docker-cleanup && npm run standup-cli && docker exec cli peer chaincode install -n prototypecontract -p /opt/gopath/src/github.com/contract -l node -v $VERSION && docker exec cli peer chaincode $OPERATION -n prototypecontract -l node -c '{\"Args\":[\"org.protonet.prototype:instantiate\"]}' -C mychannel -P \"AND ('Org1MSP.member')\" -v $VERSION",
+        "contract-instantiate": "export VERSION=0 && export OPERATION=instantiate && npm run contract-setup",
+        "contract-upgrade": "export VERSION=$((`npm run --silent get-latest-contract-version`+1)) export OPERATION=upgrade && npm run contract-setup",
+        "contract-test": "(cd ./organization/prototypecorp/application/test && node test.js)",
+        "server-test": "(cd ./organization/prototypecorp/application && node server.js)"
+    }
+}
