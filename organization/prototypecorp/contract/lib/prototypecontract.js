@@ -81,6 +81,11 @@ class PrototypeContract extends Contract {
         return true;
     }
 
+    async retriveStoragesByRange(ctx, startId, endId) {
+        let object = await ctx.StorageList.retrieveRange(startId, endId);
+        return object.toString();
+    }
+
     // Carriage object
     async insertCarriageObject(ctx, id, capacityInTonnes) {
         let object = CarriageObject.createInstance(id, capacityInTonnes);

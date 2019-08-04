@@ -29,6 +29,15 @@ class PrototypeStateList extends StateList {
         return object;
     }
 
+    async getStateByRange(startKey, endKey) {
+        let object = await super.getStateByRange(startKey, endKey);
+        if(!object) {
+            throw Error(this.name + " get key does not exist");
+        }
+
+        return object;
+    }
+
     async updateState(object) {
         await object.validate(this.ctx);
 
@@ -61,6 +70,9 @@ class PrototypeStateList extends StateList {
     }
     async retrieve(key) {
         return this.getState(key);
+    }
+    async retrieveRange(startKey, endKey) {
+        return this.getStateByRange(startKey, endKey);
     }
     async exists(key) {
         return this.hasState(key);
