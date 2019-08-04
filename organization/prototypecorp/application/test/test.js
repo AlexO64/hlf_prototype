@@ -89,10 +89,39 @@ async function main() {
             verify_equal(object.allowableReleaseDelayHours, "2");
         });
 
+        await test("InsertStorageObject", async() => {
+            try {
+                await contract.submitTransaction("deleteStorageObject", "2");
+            } catch(e) { /**/ }
+
+            let response = await contract.submitTransaction("insertStorageObject", "2", "testStorage2", "25", "2", "0");
+            let object = JSON.parse(response);
+            verify_equal(object.id, "2");
+            verify_equal(object.name, "testStorage2");
+            verify_equal(object.unloadingSpeedInTonnesPerHour, "25");
+            verify_equal(object.allowableDeliveryDelayDays, "2");
+            verify_equal(object.allowableReleaseDelayHours, "0");
+        });
+
+        await test("RetrieveStorageObject", async() => {
+            let response = await contract.evaluateTransaction("retrieveStorageObject", "2");
+            let object = JSON.parse(response);
+            verify_equal(object.id, "2");
+            verify_equal(object.name, "testStorage2");
+            verify_equal(object.unloadingSpeedInTonnesPerHour, "25");
+            verify_equal(object.allowableDeliveryDelayDays, "2");
+            verify_equal(object.allowableReleaseDelayHours, "0");
+        });
+
+        await test("RetrieveStorageObjectsByRange", async() => {
+            let response = await contract.submitTransaction("retriveStoragesByRange", "1", "5");
+            console.log(JSON.parse(response));
+        });
+/*
         await test("InsertCarriageObject", async() => {
             try {
                 await contract.submitTransaction("deleteCarriageObject", "10");
-            } catch(e) { /**/ }
+            } catch(e) {  }
 
             let response = await contract.submitTransaction("insertCarriageObject", "10", "100");
             let object = JSON.parse(response);
@@ -142,7 +171,7 @@ async function main() {
         await test("InsertDeliveryPlanObject_BadStorageId", async() => {
             let error = "";
             try {
-                await contract.submitTransaction("insertDeliveryPlanObject", "8", "1563836380", "10", "2");
+                await contract.submitTransaction("insertDeliveryPlanObject", "8", "1563836380", "10", "4");
             } catch(e) {
                 error = e.message;
             }
@@ -282,7 +311,7 @@ async function main() {
             let response = await contract.evaluateTransaction("queryStatus", "6");
             console.log(response);
         });
-     
+    */
         if(hasFailure) {
             console.log("Some tests failed");
         } else {
