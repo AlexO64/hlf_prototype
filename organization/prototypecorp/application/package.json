@@ -1,0 +1,15 @@
+{
+    "name": "hlf-prototype-application",
+    "version": "0.0.0",
+    "private": true,
+    "dependencies": {
+        "fabric-network": "~1.4.0",
+        "fabric-client": "~1.4.0",
+        "js-yaml": "^3.12.0",
+        "body-parser": "^1.18.3",
+        "express": "^4.16.4"
+    },
+    "devDependencies": {
+        "eslint": "^5.6.0"
+    }
+}
